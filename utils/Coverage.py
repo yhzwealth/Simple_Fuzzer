@@ -14,7 +14,7 @@ def import_all_functions_from_module(module_name):
         globals()[name] = obj
 
 
-import_all_functions_from_module("examples.case")
+import_all_functions_from_module("examples.Examples")
 
 
 class Coverage:

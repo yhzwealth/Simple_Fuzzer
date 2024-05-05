@@ -67,10 +67,11 @@ class GreyBoxFuzzer(Fuzzer):
         result, outcome = super().run(runner)
         new_coverage = frozenset(runner.coverage())
         if new_coverage not in self.coverages_seen:
-            # We have new coverage
-            seed = Seed(self.inp, runner.coverage())
-            self.coverages_seen.add(new_coverage)
-            self.population.append(seed)
+            if len(self.population) != 0 or outcome == Runner.PASS:
+                # We have new coverage
+                seed = Seed(self.inp, runner.coverage())
+                self.coverages_seen.add(new_coverage)
+                self.population.append(seed)
         if outcome == Runner.FAIL:
             self.crash_map[self.inp] = result
 

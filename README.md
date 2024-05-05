@@ -5,7 +5,7 @@
 该简易模糊测丝滑项目由一个样例执行入口 main.py 以及如下五个包组成：
 
 ### examples
-该包下的 Examples.py 中共有 5 个 Example Program，你可以通过模糊测试这 5 个样例程序来测试 fuzzer 工具的有效性以及工作效率
+该包下的 Examples.py 中共有 3 个 Example Program，你可以通过模糊测试这 5 个样例程序来测试 fuzzer 工具的有效性以及工作效率
 
 ### fuzzer
 该包下目前共有 3 个文件，具体体现为：

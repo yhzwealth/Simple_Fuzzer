@@ -12,7 +12,6 @@ class Seed:
 
         # These will be needed for advanced power schedules
         self.coverage: Set[Location] = _coverage
-        self.distance: Union[int, float] = -1
         self.energy = 0.0
 
     def __str__(self) -> str:

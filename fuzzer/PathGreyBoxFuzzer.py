@@ -36,13 +36,8 @@ class PathGreyBoxFuzzer(GreyBoxFuzzer):
            Uniq Crashes: {uniq_crash}
           Covered Lines: {covered_line}
         """
-        template = template.format(runtime=format_seconds(time.time() - self.start_time),
-                                   path_time=format_seconds(self.last_path_time - self.start_time),
-                                   crash_time=format_seconds(self.last_crash_time - self.start_time),
-                                   total_exec=str(self.total_execs),
-                                   total_path=len(self.schedule.path_frequency),
-                                   uniq_crash=len(set(self.crash_map.values())),
-                                   covered_line=len(self.covered_line))
+        # TODO
+
         print(template)
 
     def run(self, runner: FunctionCoverageRunner) -> Tuple[Any, str]:  # type: ignore

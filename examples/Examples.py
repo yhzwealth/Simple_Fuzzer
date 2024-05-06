@@ -8,7 +8,7 @@ def example1(s: str):
     if r1 <= r2:
         example1(str(r2 + 1))
     else:
-        temp = s[int(r1)].join(str(r2))
+        temp = s[(int(r1)) % 10].join(str(r2))
 
 
 def example2(s: str):

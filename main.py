@@ -6,7 +6,6 @@ from utils.Coverage import population_coverage
 
 if __name__ == "__main__":
     f_runner = FunctionCoverageRunner(example1)
-    grey_fuzzer = GreyBoxFuzzer(seeds=["0"], schedule=Schedule())
+    grey_fuzzer = GreyBoxFuzzer(seeds=["-11"], schedule=Schedule())
     grey_fuzzer.runs(f_runner, run_time=5)
-    all_coverage, _ = population_coverage(list(map(lambda seed: seed.data, grey_fuzzer.population)), example1)
-    print(all_coverage)
+    print(f_runner.all_coverage)

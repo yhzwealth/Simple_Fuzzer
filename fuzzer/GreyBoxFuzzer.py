@@ -1,9 +1,11 @@
-from typing import List, Any, Tuple
+import time
+from typing import List, Any, Tuple, Set
 
 import random
 
 from fuzzer.Fuzzer import Fuzzer
 from runner.Runner import Runner
+from utils.Coverage import Location
 from utils.Mutator import Mutator
 from runner.FunctionCoverageRunner import FunctionCoverageRunner
 from schedule.Schedule import Schedule
@@ -20,8 +22,10 @@ class GreyBoxFuzzer(Fuzzer):
         `schedule` - the power schedule to apply.
         """
         super().__init__()
+        self.last_crash_time = self.start_time
         self.population = None
         self.coverages_seen = None
+        self.covered_line = None
         self.seed_index = None
         self.crash_map = None
         self.seeds = seeds
@@ -33,6 +37,7 @@ class GreyBoxFuzzer(Fuzzer):
         """Reset the initial population, seed index, coverage information"""
         self.seed_index = 0
         self.coverages_seen = set()
+        self.covered_line: Set[Location] = set()
         self.crash_map = dict()
         self.population = []  # population is filled during greybox fuzzing
 
@@ -59,6 +64,30 @@ class GreyBoxFuzzer(Fuzzer):
 
         return self.inp
 
+    def print_stats(self):
+        def format_seconds(seconds):
+            hours = int(seconds) // 3600
+            minutes = int(seconds % 3600) // 60
+            remaining_seconds = int(seconds) % 60
+            return f"{hours:02d}:{minutes:02d}:{remaining_seconds:02d}"
+
+        template = """\r
+        -----------------TIMING-----------------
+               Run Time: {runtime}
+        Lash Uniq Crash: {crash_time}
+        
+        -----------------RESULT-----------------
+            Total Execs: {total_exec}
+           Uniq Crashes: {uniq_crash}
+          Covered Lines: {covered_line}
+        """
+        template = template.format(runtime=format_seconds(time.time() - self.start_time),
+                                   crash_time=format_seconds(self.last_crash_time - self.start_time),
+                                   total_exec=str(self.total_execs),
+                                   uniq_crash=len(set(self.crash_map.values())),
+                                   covered_line=len(self.covered_line))
+        print(template)
+
     def run(self, runner: FunctionCoverageRunner) -> Tuple[Any, str]:  # type: ignore
         """Run function(inp) while tracking coverage.
            If we reach new coverage,
@@ -66,6 +95,9 @@ class GreyBoxFuzzer(Fuzzer):
         """
         result, outcome = super().run(runner)
         new_coverage = frozenset(runner.coverage())
+        if len(self.covered_line) != len(runner.all_coverage):
+            self.covered_line = runner.all_coverage
+            self.last_crash_time = time.time()
         if new_coverage not in self.coverages_seen:
             if len(self.population) != 0 or outcome == Runner.PASS:
                 # We have new coverage

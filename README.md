@@ -40,7 +40,6 @@ from fuzzer.GreyBoxFuzzer import GreyBoxFuzzer
 from runner.FunctionCoverageRunner import FunctionCoverageRunner
 from schedule.Schedule import Schedule
 from examples.Examples import example1
-from utils.Coverage import population_coverage
 
 if __name__ == "__main__":
     # 构建相应程序的 Runner 对象
@@ -52,7 +51,6 @@ if __name__ == "__main__":
     # 使用 Runner 执行 Fuzzer 中的输入，并指定运行时间(s)
     grey_fuzzer.runs(f_runner, run_time=5)
     
-    # 可以使用 Coverage 中已经编写完成的函数查看本次 fuzzing 执行的覆盖率信息
-    all_coverage, _ = population_coverage(list(map(lambda seed: seed.data, grey_fuzzer.population)), example1)
-    print(all_coverage)
+    # 查看本次 fuzzing 执行的覆盖率信息
+    print(f_runner.all_coverage)
 ```

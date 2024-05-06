@@ -1,4 +1,4 @@
-from typing import Tuple, Callable, Set, Any
+from typing import Tuple, Callable, Set, Any, List
 
 from runner.Runner import Runner
 from utils.Coverage import Coverage, Location
@@ -9,6 +9,8 @@ class FunctionCoverageRunner(Runner):
         """Initialize.  `function` is a function to be executed"""
         self._coverage = None
         self.function = function
+        self.cumulative_coverage: List[int] = []
+        self.all_coverage: Set[Location] = set()
         
     def run_function(self, inp: str) -> Any:
         with Coverage() as cov:
@@ -19,6 +21,8 @@ class FunctionCoverageRunner(Runner):
                 raise exc
 
         self._coverage = cov.coverage()
+        self.all_coverage |= cov.coverage()
+        self.cumulative_coverage.append(len(self.all_coverage))
         return result
 
     def coverage(self) -> Set[Location]:

@@ -2,7 +2,7 @@ import hashlib
 import pickle
 from typing import Dict, Sequence, Any
 
-from schedule.Schedule import Schedule
+from schedule.PowerSchedule import PowerSchedule
 from utils.Seed import Seed
 
 
@@ -12,7 +12,7 @@ def get_path_id(coverage: Any) -> str:
     return hashlib.md5(pickled).hexdigest()
 
 
-class PathSchedule(Schedule):
+class PathPowerSchedule(PowerSchedule):
 
     def __init__(self, exponent: float) -> None:
         self.exponent = exponent

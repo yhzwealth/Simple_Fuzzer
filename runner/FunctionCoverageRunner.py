@@ -1,3 +1,5 @@
+import hashlib
+import traceback
 from typing import Tuple, Callable, Set, Any, List
 
 from runner.Runner import Runner
@@ -33,7 +35,8 @@ class FunctionCoverageRunner(Runner):
             result = self.run_function(inp)
             outcome = self.PASS
         except Exception as exc:
-            result = type(exc)
+            stack_trace = "".join(traceback.format_tb(exc.__traceback__))
+            result = hashlib.md5(stack_trace.encode()).hexdigest()
             outcome = self.FAIL
 
         return result, outcome

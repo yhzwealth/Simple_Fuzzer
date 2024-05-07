@@ -1,4 +1,5 @@
 import math
+from html.parser import HTMLParser
 
 
 def example1(s: str):
@@ -39,3 +40,8 @@ def example3(s: str):
                     assert s[index + 1] == 'A'
                     if not s[index + 2:].startswith('B'):
                         raise RuntimeError
+
+
+def example4(s: str):
+    parser = HTMLParser()
+    parser.feed(s)

@@ -1,14 +1,15 @@
 import time
-from typing import List
+from typing import List, Tuple, Any
 
 from fuzzer.GreyBoxFuzzer import GreyBoxFuzzer
-from schedule.PathSchedule import PathSchedule
+from schedule.PathPowerSchedule import PathPowerSchedule, get_path_id
+from runner.FunctionCoverageRunner import FunctionCoverageRunner
 
 
 class PathGreyBoxFuzzer(GreyBoxFuzzer):
     """Count how often individual paths are exercised."""
 
-    def __init__(self, seeds: List[str], schedule: PathSchedule):
+    def __init__(self, seeds: List[str], schedule: PathPowerSchedule):
         super().__init__(seeds, schedule)
         # TODO
 
@@ -27,8 +28,8 @@ class PathGreyBoxFuzzer(GreyBoxFuzzer):
         template = """
         -----------------TIMING-----------------
                Run Time: {runtime}
-          Lash New Path: {path_time}
-        Lash Uniq Crash: {crash_time}
+          Last New Path: {path_time}
+        Last Uniq Crash: {crash_time}
 
         -----------------RESULT-----------------
             Total Execs: {total_exec}

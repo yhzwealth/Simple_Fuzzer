@@ -20,37 +20,54 @@
 
 ### schedule
 该包下目前共有 2 个文件，具体体现为：
-1. Schedule.py：该文件中的 Schedule 类，为所有 Schedules 的基类，Schedule 是进行 Seed 选择调度的工具类
-2. PathSchedule.py：该文件中的 PathSchedule 继承自 Schedule 类，目前没有编写逻辑，预期实现效果为 **根据 inputs 经过的路径频率动态选择 Seed**
+1. PowerSchedule.py：该文件中的 PowerSchedule 类，为所有 PowerSchedules 的基类，PowerSchedule 是进行 Seed 选择调度的工具类
+2. PathSchedule.py：该文件中的 PathPowerSchedule 继承自 PowerSchedule 类，目前没有编写逻辑，预期实现效果为 **根据 inputs 经过的路径频率动态选择 Seed**
 
 ### utils
 该包下目前共有 3 个文件，具体体现为：
 1. Coverage.py：该文件中的 Coverage 类是统计覆盖率信息的工具类
 2. Seed.py：该文件中的 Seed 类，存储了每个 Seed 的具体信息
 3. Mutator.py：给文件中的 Mutator 类是具体执行 Mutate 的工具类，目前没有编写具体的 Mutation 逻辑
+4. ObjectUtils.py：该文件中包含 Dump 对象、Load 对象、计算对象 MD5 的工具函数
 
 ## 工程需求：
 * 在 Mutator.py 中添加具体的变异逻辑，以达成 Fuzzing 的效果
 * 完善 PathSchedule.py 以及 PathGreyBoxFuzzer.py，以完整实现 **根据 inputs 经过的路径频率动态选择 Seed**
 * 添加更多可行的 Schedules 并放置于 schedule 包中
+* 利用 ObjectUtils 对 Object 的操作实现将 Seed 放置在文件中的功能，放置内存占用过高
 
 ## 样例执行入口：
+
 ```python
-from fuzzer.GreyBoxFuzzer import GreyBoxFuzzer
+import os
+
+from fuzzer.PathGreyBoxFuzzer import PathGreyBoxFuzzer
 from runner.FunctionCoverageRunner import FunctionCoverageRunner
-from schedule.Schedule import Schedule
-from examples.Examples import example1
+from schedule.PathPowerSchedule import PathPowerSchedule
+from examples.Examples import example1, example2, example3, example4
 
 if __name__ == "__main__":
     # 构建相应程序的 Runner 对象
     f_runner = FunctionCoverageRunner(example1)
     
+    # 从本地语料库中读取 Seeds 并构建 Fuzzer
+    corpus_path = "corpus"
+    seeds = []
+    for i in os.listdir(corpus_path):
+        fname = os.path.join(corpus_path, i)
+        if os.path.isfile(fname):
+            with open(fname, 'r') as f:
+                seeds.append(f.read())
+    grey_fuzzer = PathGreyBoxFuzzer(seeds=seeds, schedule=PathPowerSchedule(5))
+
     # 构建带有初始 seeds 的 Fuzzer，并指定 schedule
-    grey_fuzzer = GreyBoxFuzzer(seeds=["abcd"], schedule=Schedule())
-    
+    # grey_fuzzer = PathGreyBoxFuzzer(seeds=["abcd"], schedule=PathPowerSchedule())
+
     # 使用 Runner 执行 Fuzzer 中的输入，并指定运行时间(s)
-    grey_fuzzer.runs(f_runner, run_time=5)
-    
+    grey_fuzzer.runs(f_runner, run_time=60)
+
     # 查看本次 fuzzing 执行的覆盖率信息
     print(f_runner.all_coverage)
+
+
 ```

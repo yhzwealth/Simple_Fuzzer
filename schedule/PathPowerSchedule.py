@@ -1,6 +1,6 @@
 from typing import Dict, Sequence
 
-from schedule.Schedule import Schedule
+from schedule.PowerSchedule import PowerSchedule
 from utils.Seed import Seed
 
 

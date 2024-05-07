@@ -4,7 +4,7 @@ from schedule.PowerSchedule import PowerSchedule
 from utils.Seed import Seed
 
 
-class PathSchedule(Schedule):
+class PathPowerSchedule(PowerSchedule):
 
     def __init__(self) -> None:
         super().__init__()

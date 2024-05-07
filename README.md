@@ -45,7 +45,17 @@ from fuzzer.PathGreyBoxFuzzer import PathGreyBoxFuzzer
 from runner.FunctionCoverageRunner import FunctionCoverageRunner
 from schedule.PathPowerSchedule import PathPowerSchedule
 from examples.Examples import example1, example2, example3, example4
+from utils.ObjectUtils import dump_object, load_object
 
+class Result:
+    def __init__(self, coverage, crashes):
+        self.covered_line = coverage
+        self.crashes = crashes
+
+    def __str__(self):
+        return "Covered Lines: " + str(self.covered_line) + ", Crashes Num: " + str(self.crashes)
+    
+    
 if __name__ == "__main__":
     # 构建相应程序的 Runner 对象
     f_runner = FunctionCoverageRunner(example1)
@@ -66,8 +76,12 @@ if __name__ == "__main__":
     # 使用 Runner 执行 Fuzzer 中的输入，并指定运行时间(s)
     grey_fuzzer.runs(f_runner, run_time=60)
 
-    # 查看本次 fuzzing 执行的覆盖率信息
-    print(f_runner.all_coverage)
+    # 将 Coverage 与 Crash 的信息导出
+    res = Result(grey_fuzzer.covered_line, set(grey_fuzzer.crash_map.values()))
+    dump_object("_result" + os.sep + "res.pkl", res)
+    
+    # 查看本次 fuzzing 的执行信息
+    print(load_object("_result" + os.sep + "res.pkl"))
 
 
 ```

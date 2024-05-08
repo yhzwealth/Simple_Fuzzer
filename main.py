@@ -30,5 +30,5 @@ if __name__ == "__main__":
     grey_fuzzer = PathGreyBoxFuzzer(seeds=seeds, schedule=PathPowerSchedule(5))
     grey_fuzzer.runs(f_runner, run_time=5)
     res = Result(grey_fuzzer.covered_line, set(grey_fuzzer.crash_map.values()))
-    dump_object("_result" + os.sep + "res.pkl", res)
-    print(load_object("_result" + os.sep + "res.pkl"))
+    dump_object("_result" + os.sep + "Example-1.pkl", res)
+    print(load_object("_result" + os.sep + "Example-1.pkl"))

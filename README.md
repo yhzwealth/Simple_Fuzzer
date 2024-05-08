@@ -78,10 +78,10 @@ if __name__ == "__main__":
 
     # 将 Coverage 与 Crash 的信息导出
     res = Result(grey_fuzzer.covered_line, set(grey_fuzzer.crash_map.values()))
-    dump_object("_result" + os.sep + "res.pkl", res)
+    dump_object("_result" + os.sep + "Example-1.pkl", res)
     
     # 查看本次 fuzzing 的执行信息
-    print(load_object("_result" + os.sep + "res.pkl"))
+    print(load_object("_result" + os.sep + "Example-1.pkl"))
 
 
 ```

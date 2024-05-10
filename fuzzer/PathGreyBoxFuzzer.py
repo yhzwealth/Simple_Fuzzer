@@ -2,7 +2,7 @@ import time
 from typing import List, Tuple, Any
 
 from fuzzer.GreyBoxFuzzer import GreyBoxFuzzer
-from schedule.PathPowerSchedule import PathPowerSchedule, get_path_id
+from schedule.PathPowerSchedule import PathPowerSchedule
 from runner.FunctionCoverageRunner import FunctionCoverageRunner
 
 

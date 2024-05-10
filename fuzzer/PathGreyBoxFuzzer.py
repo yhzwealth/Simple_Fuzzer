@@ -2,7 +2,7 @@ import time
 from typing import List, Tuple, Any
 
 from fuzzer.GreyBoxFuzzer import GreyBoxFuzzer
-from schedule.PathPowerSchedule import PathPowerSchedule, get_path_id
+from schedule.PathPowerSchedule import PathPowerSchedule
 from runner.FunctionCoverageRunner import FunctionCoverageRunner
 
 
@@ -11,9 +11,9 @@ class PathGreyBoxFuzzer(GreyBoxFuzzer):
 
     def __init__(self, seeds: List[str], schedule: PathPowerSchedule, is_print: bool):
         super().__init__(seeds, schedule, False)
-        self.schedule = schedule
-        self.schedule.path_frequency = {}
-        self.last_path_time = self.start_time
+
+        # TODO
+
         print("""
 ┌───────────────────────┬───────────────────────┬───────────────────────┬───────────────────┬───────────────────┬────────────────┬───────────────────┐
 │        Run Time       │     Last New Path     │    Last Uniq Crash    │    Total Execs    │    Total Paths    │  Uniq Crashes  │   Covered Lines   │
@@ -29,10 +29,10 @@ class PathGreyBoxFuzzer(GreyBoxFuzzer):
         template = """│{runtime}│{path_time}│{crash_time}│{total_exec}│{total_path}│{uniq_crash}│{covered_line}│
 ├───────────────────────┼───────────────────────┼───────────────────────┼───────────────────┼───────────────────┼────────────────┼───────────────────┤"""
         template = template.format(runtime=format_seconds(time.time() - self.start_time).center(23),
-                                   path_time=format_seconds(self.last_path_time - self.start_time).center(23),
+                                   path_time="".center(23),
                                    crash_time=format_seconds(self.last_crash_time - self.start_time).center(23),
                                    total_exec=str(self.total_execs).center(19),
-                                   total_path=str(len(self.schedule.path_frequency)).center(19),
+                                   total_path="".center(19),
                                    uniq_crash=str(len(set(self.crash_map.values()))).center(16),
                                    covered_line=str(len(self.covered_line)).center(19))
         print(template)
@@ -41,11 +41,6 @@ class PathGreyBoxFuzzer(GreyBoxFuzzer):
         """Inform scheduler about path frequency"""
         result, outcome = super().run(runner)
 
-        path_id = get_path_id(runner.coverage())
-        if path_id not in self.schedule.path_frequency:
-            self.schedule.path_frequency[path_id] = 1
-            self.last_path_time = time.time()
-        else:
-            self.schedule.path_frequency[path_id] += 1
+        # TODO
 
         return result, outcome

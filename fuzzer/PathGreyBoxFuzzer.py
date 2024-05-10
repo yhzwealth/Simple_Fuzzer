@@ -26,7 +26,7 @@ class PathGreyBoxFuzzer(GreyBoxFuzzer):
             remaining_seconds = int(seconds) % 60
             return f"{hours:02d}:{minutes:02d}:{remaining_seconds:02d}"
 
-        template = """│{runtime}│{crash_time}│{path_time}│{total_exec}│{total_path}│{uniq_crash}│{covered_line}│
+        template = """│{runtime}│{path_time}│{crash_time}│{total_exec}│{total_path}│{uniq_crash}│{covered_line}│
 ├───────────────────────┼───────────────────────┼───────────────────────┼───────────────────┼───────────────────┼────────────────┼───────────────────┤"""
         template = template.format(runtime=format_seconds(time.time() - self.start_time).center(23),
                                    path_time=format_seconds(self.last_path_time - self.start_time).center(23),

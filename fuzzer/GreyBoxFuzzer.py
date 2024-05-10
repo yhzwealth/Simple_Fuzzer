@@ -1,3 +1,4 @@
+import os
 import time
 from typing import List, Any, Tuple, Set
 
@@ -25,7 +26,6 @@ class GreyBoxFuzzer(Fuzzer):
         self.last_crash_time = self.start_time
         self.population = []
         self.file_map = {}
-        self.coverages_seen = set()
         self.covered_line: Set[Location] = set()
         self.seed_index = 0
         self.crash_map = dict()
@@ -85,17 +85,14 @@ class GreyBoxFuzzer(Fuzzer):
            add inp to population and its coverage to population_coverage
         """
         result, outcome = super().run(runner)
-        new_coverage = frozenset(runner.coverage())
         if len(self.covered_line) != len(runner.all_coverage):
-            self.covered_line = runner.all_coverage
-            self.last_crash_time = time.time()
-        if new_coverage not in self.coverages_seen:
+            self.covered_line |= runner.all_coverage
             if len(self.population) != 0 or outcome == Runner.PASS:
                 # We have new coverage
                 seed = Seed(self.inp, runner.coverage())
-                self.coverages_seen.add(new_coverage)
                 self.population.append(seed)
         if outcome == Runner.FAIL:
+            self.last_crash_time = time.time()
             self.crash_map[self.inp] = result
 
         return result, outcome

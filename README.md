@@ -72,18 +72,18 @@ if __name__ == "__main__":
     seeds = load_object("corpus/corpus_1")
     grey_fuzzer = PathGreyBoxFuzzer(seeds=seeds, schedule=PathPowerSchedule(5), is_print=True)
 
-    # 构建带有初始 seeds 的 Fuzzer，并指定 schedule
-    # grey_fuzzer = PathGreyBoxFuzzer(seeds=["abcd"], schedule=PathPowerSchedule())
+    # 记录开始时间
+    start_time = time.time()
 
     # 使用 Runner 执行 Fuzzer 中的输入，并指定运行时间(s)
     grey_fuzzer.runs(f_runner, run_time=60)
 
     # 将 Coverage 与 Crash 的信息导出
-    res = Result(grey_fuzzer.covered_line, set(grey_fuzzer.crash_map.values()))
-    dump_object("_result" + os.sep + "Example-1.pkl", res)
+    res = Result(grey_fuzzer.covered_line, set(grey_fuzzer.crash_map.values()), start_time, time.time())
+    dump_object("_result" + os.sep + "Sample-1.pkl", res)
 
     # 查看本次 fuzzing 的执行信息
-    print(load_object("_result" + os.sep + "Example-1.pkl"))
+    print(load_object("_result" + os.sep + "Sample-1.pkl"))
 
 
 ```

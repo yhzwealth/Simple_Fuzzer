@@ -2,17 +2,19 @@ import math
 from html.parser import HTMLParser
 
 
-def example1(s: str):
+def sample1(s: str):
     number = float(s)
     r1 = 1 - number
     r2 = r1 / number
-    if r1 <= r2:
-        example1(str(r2 + 1))
+    if r1 == r2:
+        sample1(str(r2 + 1))
+    elif r1 < r2:
+        temp = s[(int(r2)) % 10].join(str(r1))
     else:
         temp = s[(int(r1)) % 10].join(str(r2))
 
 
-def example2(s: str):
+def sample2(s: str):
     temp = """%d. {Key} is """
     r = s.split(".")
     temp += r[1]
@@ -30,7 +32,7 @@ def example2(s: str):
         temp += str(math.sqrt(int(r[0])))
 
 
-def example3(s: str):
+def sample3(s: str):
     if s[0] == 'F':
         if s[1] == 'D':
             if s[2] == 'U':
@@ -42,6 +44,6 @@ def example3(s: str):
                         raise RuntimeError
 
 
-def example4(s: str):
+def sample4(s: str):
     parser = HTMLParser()
     parser.feed(s)

@@ -1,34 +1,31 @@
 import os
+import time
 
 from fuzzer.PathGreyBoxFuzzer import PathGreyBoxFuzzer
 from runner.FunctionCoverageRunner import FunctionCoverageRunner
 from schedule.PathPowerSchedule import PathPowerSchedule
-from examples.Examples import example1, example2, example3, example4
+from samples.Samples import sample1, sample2, sample3, sample4
 from utils.ObjectUtils import dump_object, load_object
 
 
 class Result:
-    def __init__(self, coverage, crashes):
+    def __init__(self, coverage, crashes, start_time, end_time):
         self.covered_line = coverage
         self.crashes = crashes
+        self.start_time = start_time
+        self.end_time = end_time
 
     def __str__(self):
-        return "Covered Lines: " + str(self.covered_line) + ", Crashes Num: " + str(self.crashes)
+        return "Covered Lines: " + str(self.covered_line) + ", Crashes Num: " + str(self.crashes) + ", Start Time: " + str(self.start_time) + ", End Time: " + str(self.end_time)
 
 
 if __name__ == "__main__":
-    f_runner = FunctionCoverageRunner(example4)
-    corpus_path = "corpus"
+    f_runner = FunctionCoverageRunner(sample1)
+    seeds = load_object("corpus/corpus_1")
 
-    seeds = []
-    for i in os.listdir(corpus_path):
-        fname = os.path.join(corpus_path, i)
-        if os.path.isfile(fname):
-            with open(fname, 'r') as f:
-                seeds.append(f.read())
-
-    grey_fuzzer = PathGreyBoxFuzzer(seeds=seeds, schedule=PathPowerSchedule(5))
-    grey_fuzzer.runs(f_runner, run_time=5)
-    res = Result(grey_fuzzer.covered_line, set(grey_fuzzer.crash_map.values()))
-    dump_object("_result" + os.sep + "Example-1.pkl", res)
-    print(load_object("_result" + os.sep + "Example-1.pkl"))
+    start_time = time.time()
+    grey_fuzzer = PathGreyBoxFuzzer(seeds=seeds, schedule=PathPowerSchedule(5), is_print=True)
+    grey_fuzzer.runs(f_runner, run_time=300)
+    res = Result(grey_fuzzer.covered_line, set(grey_fuzzer.crash_map.values()), start_time, time.time())
+    dump_object("_result" + os.sep + "Sample-1.pkl", res)
+    print(load_object("_result" + os.sep + "Sample-1.pkl"))

@@ -15,7 +15,7 @@ from utils.Seed import Seed
 
 class GreyBoxFuzzer(Fuzzer):
 
-    def __init__(self, seeds: List[str], schedule: PowerSchedule) -> None:
+    def __init__(self, seeds: List[str], schedule: PowerSchedule, is_print: bool) -> None:
         """Constructor.
         `seeds` - a list of (input) strings to mutate.
         `mutator` - the mutator to apply.
@@ -32,6 +32,11 @@ class GreyBoxFuzzer(Fuzzer):
         self.seeds = seeds
         self.mutator = Mutator()
         self.schedule = schedule
+        if is_print:
+            print("""
+┌───────────────────────┬───────────────────────┬───────────────────┬────────────────┬───────────────────┐
+│        Run Time       │    Last Uniq Crash    │    Total Execs    │  Uniq Crashes  │   Covered Lines   │
+├───────────────────────┼───────────────────────┼───────────────────┼────────────────┼───────────────────┤""")
 
 
     def create_candidate(self) -> str:
@@ -64,21 +69,14 @@ class GreyBoxFuzzer(Fuzzer):
             remaining_seconds = int(seconds) % 60
             return f"{hours:02d}:{minutes:02d}:{remaining_seconds:02d}"
 
-        template = """\r
-        -----------------TIMING-----------------
-               Run Time: {runtime}
-        Last Uniq Crash: {crash_time}
-        
-        -----------------RESULT-----------------
-            Total Execs: {total_exec}
-           Uniq Crashes: {uniq_crash}
-          Covered Lines: {covered_line}
-        """
-        template = template.format(runtime=format_seconds(time.time() - self.start_time),
-                                   crash_time=format_seconds(self.last_crash_time - self.start_time),
-                                   total_exec=str(self.total_execs),
-                                   uniq_crash=len(set(self.crash_map.values())),
-                                   covered_line=len(self.covered_line))
+        template = """│{runtime}│{crash_time}│{total_exec}│{uniq_crash}│{covered_line}│
+├───────────────────────┼───────────────────────┼───────────────────┼────────────────┼───────────────────┤"""
+
+        template = template.format(runtime=format_seconds(time.time() - self.start_time).center(23),
+                                   crash_time=format_seconds(self.last_crash_time - self.start_time).center(23),
+                                   total_exec=str(self.total_execs).center(19),
+                                   uniq_crash=str(len(set(self.crash_map.values()))).center(16),
+                                   covered_line=str(len(self.covered_line)).center(19))
         print(template)
 
     def run(self, runner: FunctionCoverageRunner) -> Tuple[Any, str]:  # type: ignore

@@ -9,12 +9,15 @@ from runner.FunctionCoverageRunner import FunctionCoverageRunner
 class PathGreyBoxFuzzer(GreyBoxFuzzer):
     """Count how often individual paths are exercised."""
 
-    def __init__(self, seeds: List[str], schedule: PathPowerSchedule):
-        super().__init__(seeds, schedule)
+    def __init__(self, seeds: List[str], schedule: PathPowerSchedule, is_print: bool):
+        super().__init__(seeds, schedule, False)
         self.schedule = schedule
         self.schedule.path_frequency = {}
         self.last_path_time = self.start_time
-
+        print("""
+┌───────────────────────┬───────────────────────┬───────────────────────┬───────────────────┬───────────────────┬────────────────┬───────────────────┐
+│        Run Time       │     Last New Path     │    Last Uniq Crash    │    Total Execs    │    Total Paths    │  Uniq Crashes  │   Covered Lines   │
+├───────────────────────┼───────────────────────┼───────────────────────┼───────────────────┼───────────────────┼────────────────┼───────────────────┤""")
 
     def print_stats(self):
         def format_seconds(seconds):
@@ -23,25 +26,15 @@ class PathGreyBoxFuzzer(GreyBoxFuzzer):
             remaining_seconds = int(seconds) % 60
             return f"{hours:02d}:{minutes:02d}:{remaining_seconds:02d}"
 
-        template = """
-        -----------------TIMING-----------------
-               Run Time: {runtime}
-          Last New Path: {path_time}
-        Last Uniq Crash: {crash_time}
-
-        -----------------RESULT-----------------
-            Total Execs: {total_exec}
-            Total Paths: {total_path}
-           Uniq Crashes: {uniq_crash}
-          Covered Lines: {covered_line}
-        """
-        template = template.format(runtime=format_seconds(time.time() - self.start_time),
-                                   path_time=format_seconds(self.last_path_time - self.start_time),
-                                   crash_time=format_seconds(self.last_crash_time - self.start_time),
-                                   total_exec=str(self.total_execs),
-                                   total_path=len(self.schedule.path_frequency),
-                                   uniq_crash=len(set(self.crash_map.values())),
-                                   covered_line=len(self.covered_line))
+        template = """│{runtime}│{crash_time}│{path_time}│{total_exec}│{total_path}│{uniq_crash}│{covered_line}│
+├───────────────────────┼───────────────────────┼───────────────────────┼───────────────────┼───────────────────┼────────────────┼───────────────────┤"""
+        template = template.format(runtime=format_seconds(time.time() - self.start_time).center(23),
+                                   path_time=format_seconds(self.last_path_time - self.start_time).center(23),
+                                   crash_time=format_seconds(self.last_crash_time - self.start_time).center(23),
+                                   total_exec=str(self.total_execs).center(19),
+                                   total_path=str(len(self.schedule.path_frequency)).center(19),
+                                   uniq_crash=str(len(set(self.crash_map.values()))).center(16),
+                                   covered_line=str(len(self.covered_line)).center(19))
         print(template)
 
     def run(self, runner: FunctionCoverageRunner) -> Tuple[Any, str]:  # type: ignore

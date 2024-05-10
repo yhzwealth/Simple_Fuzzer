@@ -27,8 +27,8 @@ if __name__ == "__main__":
             with open(fname, 'r') as f:
                 seeds.append(f.read())
 
-    grey_fuzzer = PathGreyBoxFuzzer(seeds=seeds, schedule=PathPowerSchedule(5))
-    grey_fuzzer.runs(f_runner, run_time=5)
+    grey_fuzzer = PathGreyBoxFuzzer(seeds=seeds, schedule=PathPowerSchedule(5), is_print=True)
+    grey_fuzzer.runs(f_runner, run_time=3600)
     res = Result(grey_fuzzer.covered_line, set(grey_fuzzer.crash_map.values()))
     dump_object("_result" + os.sep + "Example-1.pkl", res)
     print(load_object("_result" + os.sep + "Example-1.pkl"))

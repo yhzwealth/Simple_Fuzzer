@@ -87,7 +87,7 @@ class GreyBoxFuzzer(Fuzzer):
         result, outcome = super().run(runner)
         if len(self.covered_line) != len(runner.all_coverage):
             self.covered_line |= runner.all_coverage
-            if len(self.population) != 0 or outcome == Runner.PASS:
+            if outcome == Runner.PASS:
                 # We have new coverage
                 seed = Seed(self.inp, runner.coverage())
                 self.population.append(seed)
